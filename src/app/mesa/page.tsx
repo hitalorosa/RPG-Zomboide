@@ -8,6 +8,7 @@ import {
   type Personagem,
 } from "@/lib/personagens";
 import { acharEspecializacao, ATRIBUTOS, ESTADOS } from "@/lib/regras";
+import { MAPAS, MAPA_PADRAO } from "@/lib/mapas";
 import { supabaseConfigurado } from "@/lib/supabase";
 
 export default function PaginaMesa() {
@@ -15,6 +16,8 @@ export default function PaginaMesa() {
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [aberto, setAberto] = useState<LinhaMesa | null>(null);
+  const [mapa, setMapa] = useState(MAPA_PADRAO);
+  const [telaCheia, setTelaCheia] = useState(false);
 
   function recarregar() {
     listarMesa()
@@ -25,9 +28,17 @@ export default function PaginaMesa() {
 
   useEffect(recarregar, []);
 
+  // Esc fecha a tela cheia do mapa
+  useEffect(() => {
+    if (!telaCheia) return;
+    const f = (e: KeyboardEvent) => e.key === "Escape" && setTelaCheia(false);
+    window.addEventListener("keydown", f);
+    return () => window.removeEventListener("keydown", f);
+  }, [telaCheia]);
+
   return (
     <main className="flex-1 px-5 py-10">
-      <div className="mx-auto w-full max-w-4xl">
+      <div className="mx-auto w-full max-w-5xl">
         <p className="fonte-display text-xs tracking-[0.3em] text-rust">
           NARRADOR
         </p>
@@ -36,16 +47,59 @@ export default function PaginaMesa() {
         </h1>
         <div className="mt-4 h-px w-full bg-line" />
 
+        {/* ----------------------------- mapas ---------------------------- */}
+        <section className="mt-8">
+          <div className="flex flex-wrap gap-2">
+            {MAPAS.map((m) => {
+              const ativo = m.chave === mapa.chave;
+              return (
+                <button
+                  key={m.chave}
+                  onClick={() => setMapa(m)}
+                  aria-pressed={ativo}
+                  className={`fonte-display uppercase rounded-lg border px-3.5 py-2 text-sm tracking-wide transition-colors ${
+                    ativo
+                      ? "border-sage bg-surface-2 text-sage"
+                      : "border-line bg-surface text-bone-dim hover:border-sage/50 hover:text-bone"
+                  }`}
+                >
+                  {m.nome}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => setTelaCheia(true)}
+            title="Abrir em tela cheia"
+            className="mt-4 block w-full overflow-hidden rounded-2xl border border-line
+                       transition-colors hover:border-sage"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={mapa.arquivo}
+              alt={`Mapa: ${mapa.nome}`}
+              className="w-full object-contain bg-surface"
+            />
+          </button>
+
+          <p className="mt-2 text-center text-xs text-bone-dim/70">
+            Clique no mapa para abrir em tela cheia
+          </p>
+        </section>
+
         {erro && <p className="mt-6 text-sm text-perigo">{erro}</p>}
 
+        <h2 className="fonte-display uppercase text-sm tracking-[0.2em] text-rust mt-12">
+          Sobreviventes
+        </h2>
+
         {carregando ? (
-          <p className="mt-8 text-sm text-bone-dim">Carregando…</p>
+          <p className="mt-4 text-sm text-bone-dim">Carregando…</p>
         ) : linhas.length === 0 ? (
-          <p className="mt-8 text-sm text-bone-dim">
-            Ninguém entrou ainda.
-          </p>
+          <p className="mt-4 text-sm text-bone-dim">Ninguém entrou ainda.</p>
         ) : (
-          <ul className="mt-8 divide-y divide-line rounded-xl border border-line overflow-hidden">
+          <ul className="mt-4 divide-y divide-line rounded-xl border border-line overflow-hidden">
             {linhas.map((l) => {
               const esp = acharEspecializacao(l.personagem?.especializacao);
               return (
@@ -97,6 +151,29 @@ export default function PaginaMesa() {
             recarregar();
           }}
         />
+      )}
+
+      {/* ------------------------- mapa em tela cheia ------------------- */}
+      {telaCheia && (
+        <div
+          onClick={() => setTelaCheia(false)}
+          className="fixed inset-0 z-30 flex flex-col bg-ink"
+        >
+          <div className="flex items-center justify-between px-5 py-3 border-b border-line">
+            <span className="fonte-display uppercase tracking-wide text-sage">
+              {mapa.nome}
+            </span>
+            <span className="text-xs text-bone-dim">
+              Clique ou Esc para fechar
+            </span>
+          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={mapa.arquivo}
+            alt={`Mapa: ${mapa.nome}`}
+            className="flex-1 min-h-0 w-full object-contain p-3"
+          />
+        </div>
       )}
     </main>
   );
