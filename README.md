@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RPG Zomboide
 
-## Getting Started
+Painel de mesa para a campanha — sobrevivência em Campinas, cinco anos depois
+do colapso.
 
-First, run the development server:
+Duas telas, dois usos:
+
+- **Jogador** (celular) — entrar, montar personagem, ver a própria ficha
+- **Mesa** (computador) — mapa atual, criaturas conhecidas, facções, e o estado
+  de todos os sobreviventes ao mesmo tempo
+
+---
+
+## Rodando localmente
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre em `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+O site **funciona sem banco de dados** — nesse modo os nomes ficam salvos só no
+navegador. Serve para testar a interface antes de ligar o Supabase.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Ligando o Supabase
 
-To learn more about Next.js, take a look at the following resources:
+1. Criar um projeto em [supabase.com](https://supabase.com)
+2. Abrir **SQL Editor → New query**, colar o conteúdo de
+   [`supabase/schema.sql`](supabase/schema.sql) e rodar
+3. Copiar `.env.local.example` para `.env.local`
+4. Preencher com os valores de **Project Settings → API**:
+   - `NEXT_PUBLIC_SUPABASE_URL` — a URL do projeto
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` — a chave `anon` / `public`
+5. Reiniciar o `npm run dev`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+O aviso de "banco não conectado" some quando estiver certo.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Publicando na Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. [vercel.com](https://vercel.com) → **Add New → Project** → importar este
+   repositório
+2. Em **Environment Variables**, colocar as mesmas duas variáveis do
+   `.env.local`
+3. Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+A partir daí, todo `git push` na branch principal republica sozinho.
+
+---
+
+## Estrutura
+
+```
+src/app/page.tsx        entrada — "quem vai entrar na jornada?"
+src/app/ficha/          ficha do sobrevivente
+src/lib/supabase.ts     cliente do banco (tolera ausência de credenciais)
+src/lib/jogadores.ts    leitura/escrita de jogadores + sessão
+supabase/schema.sql     esquema do banco
+```
+
+## Stack
+
+Next.js · TypeScript · Tailwind CSS · Supabase · deploy na Vercel

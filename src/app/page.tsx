@@ -1,69 +1,132 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  entrarComoJogador,
+  listarJogadores,
+  salvarSessao,
+  type Jogador,
+} from "@/lib/jogadores";
+import { supabaseConfigurado } from "@/lib/supabase";
+
+export default function PaginaEntrada() {
+  const router = useRouter();
+  const [jogadores, setJogadores] = useState<Jogador[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [nome, setNome] = useState("");
+  const [entrando, setEntrando] = useState<string | null>(null);
+  const [erro, setErro] = useState<string | null>(null);
+
+  useEffect(() => {
+    listarJogadores()
+      .then(setJogadores)
+      .catch((e: Error) => setErro(e.message))
+      .finally(() => setCarregando(false));
+  }, []);
+
+  async function entrar(nomeEscolhido: string) {
+    setErro(null);
+    setEntrando(nomeEscolhido);
+    try {
+      const jogador = await entrarComoJogador(nomeEscolhido);
+      salvarSessao(jogador);
+      router.push("/ficha");
+    } catch (e) {
+      setErro((e as Error).message);
+      setEntrando(null);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="flex-1 flex flex-col items-center justify-center px-5 py-12">
+      <div className="w-full max-w-3xl">
+        <p className="fonte-display text-center text-xs sm:text-sm tracking-[0.35em] text-rust mb-3">
+          RPG ZOMBOIDE
+        </p>
+
+        <h1 className="fonte-display text-center uppercase text-bone leading-[0.95] text-[2rem] sm:text-5xl">
+          Quem vai entrar
+          <br />
+          na jornada?
+        </h1>
+
+        <div className="mx-auto mt-5 h-px w-24 bg-rust/70" />
+
+        {/* ---------------------------- lista ---------------------------- */}
+        <section className="mt-10">
+          {carregando ? (
+            <p className="text-center text-sm text-bone-dim">Carregando…</p>
+          ) : jogadores.length === 0 ? (
+            <p className="text-center text-sm text-bone-dim">
+              Ninguém entrou ainda. Seja o primeiro.
+            </p>
+          ) : (
+            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+              {jogadores.map((j) => (
+                <li key={j.id}>
+                  <button
+                    onClick={() => entrar(j.nome)}
+                    disabled={entrando !== null}
+                    className="group w-full aspect-square rounded-2xl border border-line bg-surface
+                               flex items-center justify-center px-3
+                               transition-colors
+                               hover:border-sage hover:bg-surface-2
+                               disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <span className="fonte-display uppercase text-lg sm:text-xl text-bone break-words text-center group-hover:text-sage transition-colors">
+                      {entrando === j.nome ? "…" : j.nome}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {/* ------------------------- entrar novo ------------------------- */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (nome.trim()) entrar(nome);
+          }}
+          className="mt-8 flex flex-col sm:flex-row gap-3"
+        >
+          <input
+            value={nome}
+            onChange={(e) => setNome(e.target.value)}
+            maxLength={24}
+            placeholder="Entrar com outro nome"
+            aria-label="Seu nome"
+            className="flex-1 rounded-xl border border-line bg-surface px-4 py-3
+                       text-bone placeholder:text-bone-dim/60
+                       focus:border-sage outline-none transition-colors"
+          />
+          <button
+            type="submit"
+            disabled={!nome.trim() || entrando !== null}
+            className="fonte-display uppercase tracking-wide rounded-xl px-7 py-3
+                       bg-rust text-bone
+                       transition-opacity hover:opacity-90
+                       disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            Entrar
+          </button>
+        </form>
+
+        {erro && (
+          <p className="mt-4 text-center text-sm text-perigo" role="alert">
+            {erro}
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        )}
+
+        {!supabaseConfigurado && (
+          <p className="mt-10 text-center text-xs leading-relaxed text-bone-dim/70">
+            Banco de dados ainda não conectado — os nomes estão sendo salvos
+            só neste navegador.
+          </p>
+        )}
+      </div>
+    </main>
   );
 }

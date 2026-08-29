@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# permitir o exemplo de env (o .env.local real continua ignorado)
+!.env.local.example

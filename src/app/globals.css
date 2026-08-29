@@ -1,26 +1,66 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------
+   RPG Zomboide — paleta do projeto
+   Mesma linguagem visual dos mapas e do bestiário:
+   verde-sage, ferrugem, osso, sobre fundo escuro esverdeado.
+   Escuro por padrão: a mesa joga em ambiente com pouca luz.
+--------------------------------------------------------------- */
+
+@theme {
+  --color-ink: #0b0d09;
+  --color-surface: #141810;
+  --color-surface-2: #1d2318;
+  --color-line: #2b3225;
+
+  --color-sage: #7f8d6b;
+  --color-sage-dim: #4a5340;
+
+  --color-rust: #b04a2f;
+  --color-rust-dim: #6e2c1c;
+
+  --color-bone: #ece6d8;
+  --color-bone-dim: #918b7b;
+
+  --color-ochre: #c9963f;
+  --color-perigo: #9c2a19;
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-corpo);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background-color: var(--color-ink);
+  color: var(--color-bone);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-corpo), system-ui, sans-serif;
+  /* textura sutil de papel/grão, para não ficar chapado */
+  background-image: radial-gradient(
+      circle at 20% 0%,
+      rgba(127, 141, 107, 0.06),
+      transparent 55%
+    ),
+    radial-gradient(circle at 85% 100%, rgba(176, 74, 47, 0.05), transparent 55%);
+  background-attachment: fixed;
+}
+
+.fonte-display {
+  font-family: var(--font-display), system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
+/* Foco visível e consistente — acessibilidade no escuro */
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-ochre);
+  outline-offset: 2px;
+}
+
+/* Evita zoom automático no iOS ao focar campo */
+input,
+select,
+textarea {
+  font-size: 16px;
 }
