@@ -21,6 +21,7 @@ import {
   type ChaveAtributo,
 } from "@/lib/regras";
 import { Area, Campo, Contador, Secao } from "@/components/campos";
+import { Avatar } from "@/components/avatar";
 import { supabaseConfigurado } from "@/lib/supabase";
 
 export default function PaginaFicha() {
@@ -118,13 +119,22 @@ export default function PaginaFicha() {
       <div className="mx-auto w-full max-w-2xl">
         {/* cabeçalho */}
         <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="fonte-display text-xs tracking-[0.3em] text-rust">
-              {jogador.nome.toUpperCase()}
-            </p>
-            <h1 className="fonte-display uppercase text-bone text-3xl sm:text-4xl leading-none mt-1">
-              Preencha a ficha
-            </h1>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push("/personagem")}
+              aria-label="Editar aparência"
+              className="shrink-0 rounded-full border border-line transition-colors hover:border-sage"
+            >
+              <Avatar a={p.aparencia} className="h-14 w-14" />
+            </button>
+            <div>
+              <p className="fonte-display text-xs tracking-[0.3em] text-rust">
+                {jogador.nome.toUpperCase()}
+              </p>
+              <h1 className="fonte-display uppercase text-bone text-2xl sm:text-4xl leading-none mt-1">
+                Preencha a ficha
+              </h1>
+            </div>
           </div>
           <button
             onClick={() => {

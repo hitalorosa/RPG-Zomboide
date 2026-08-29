@@ -1,6 +1,8 @@
 import { supabase, supabaseConfigurado } from "./supabase";
+import { APARENCIA_PADRAO, type Aparencia } from "./aparencia";
 
 export type Personagem = {
+  aparencia: Aparencia;
   id?: string;
   jogador_id: string;
   ativo: boolean;
@@ -49,6 +51,7 @@ export function personagemVazio(jogadorId: string): Personagem {
   return {
     jogador_id: jogadorId,
     ativo: true,
+    aparencia: { ...APARENCIA_PADRAO },
     nome: "",
     idade: "",
     pronomes: "",
@@ -100,15 +103,23 @@ export async function carregarPersonagem(
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    return (data as Personagem) ?? null;
+    return data ? normalizar(data as Personagem) : null;
   }
 
   try {
     const bruto = window.localStorage.getItem(chaveLocal(jogadorId));
-    return bruto ? (JSON.parse(bruto) as Personagem) : null;
+    return bruto ? normalizar(JSON.parse(bruto) as Personagem) : null;
   } catch {
     return null;
   }
+}
+
+/** Fichas criadas antes da caracterização não têm aparência — completa. */
+function normalizar(p: Personagem): Personagem {
+  return {
+    ...p,
+    aparencia: { ...APARENCIA_PADRAO, ...(p.aparencia ?? {}) },
+  };
 }
 
 /* ------------------------------- escrita ----------------------------- */
