@@ -98,10 +98,15 @@ export default function PaginaFicha() {
         estresse: p.estresse || 0,
         fadiga: p.fadiga || 0,
       };
+      const eraNova = !p.id;
       const salvo = await salvarPersonagem(pronto);
       setP(salvo);
       setSujo(false);
-      setAviso("Ficha salva.");
+
+      // primeira vez: leva para a página do personagem.
+      // edição de ficha já existente: fica onde está.
+      if (eraNova) router.push("/personagem");
+      else setAviso("Ficha salva.");
     } catch (e) {
       setErro((e as Error).message);
     } finally {

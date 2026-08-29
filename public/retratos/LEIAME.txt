@@ -1,0 +1,2 @@
+Retratos dos personagens.
+Coloque os PNG/JPG aqui e a URL vira /retratos/arquivo.png
