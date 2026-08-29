@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import {
   listarMesa,
   salvarPersonagem,
@@ -70,13 +71,12 @@ export default function PaginaMesa() {
       {/* ============================ topo ============================= */}
       <header className="shrink-0 flex items-center justify-between gap-4 px-4 py-1.5 border-b border-line">
         <nav className="flex items-center gap-5">
-          <button
-            disabled
-            title="Ainda não construído"
-            className="fonte-display uppercase text-sm tracking-wide text-bone-dim/40 cursor-not-allowed"
+          <Link
+            href="/criaturas"
+            className="fonte-display uppercase text-sm tracking-wide text-bone-dim hover:text-bone transition-colors"
           >
             Criaturas
-          </button>
+          </Link>
           <button
             disabled
             title="Ainda não construído"
