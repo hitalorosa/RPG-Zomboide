@@ -22,3 +22,9 @@ create policy "descobertas remocao" on public.descobertas for delete using (true
 -- Comum e Corredor ja nascem revelados.
 insert into public.descobertas (chave) values ('criatura:comum'), ('criatura:corredor')
   on conflict (chave) do nothing;
+
+-- O grupo mora na Base, entao ja conhece o Conselho. Os Cicatrizes nao.
+insert into public.descobertas (chave) values
+  ('faccao:wilson'), ('faccao:neide'), ('faccao:bandeira'),
+  ('faccao:rosana'), ('faccao:soldado')
+  on conflict (chave) do nothing;

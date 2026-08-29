@@ -77,13 +77,12 @@ export default function PaginaMesa() {
           >
             Criaturas
           </Link>
-          <button
-            disabled
-            title="Ainda não construído"
-            className="fonte-display uppercase text-sm tracking-wide text-bone-dim/40 cursor-not-allowed"
+          <Link
+            href="/faccoes"
+            className="fonte-display uppercase text-sm tracking-wide text-bone-dim hover:text-bone transition-colors"
           >
             Facções conhecidas
-          </button>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-1.5">

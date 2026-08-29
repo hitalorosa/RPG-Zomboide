@@ -12,6 +12,7 @@ export default function PaginaCriaturas() {
   const [erro, setErro] = useState<string | null>(null);
   const [mestre, setMestre] = useState(false);
   const [aberta, setAberta] = useState<Criatura | null>(null);
+  const [ocupadas, setOcupadas] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     listarDescobertas()
@@ -20,19 +21,39 @@ export default function PaginaCriaturas() {
       .finally(() => setCarregando(false));
   }, []);
 
+  /**
+   * Forma funcional em todos os set: montar o Set a partir da variável do
+   * render fazia um clique desfazer o anterior, e o rollback reusava a mesma
+   * referência (React não re-renderizava).
+   */
+  function aplicar(chave: string, revelado: boolean) {
+    setReveladas((atual) => {
+      const novo = new Set(atual);
+      if (revelado) novo.add(chave);
+      else novo.delete(chave);
+      return novo;
+    });
+  }
+
   async function alternar(c: Criatura) {
     const chave = CHAVE_CRIATURA(c.chave);
+    if (ocupadas.has(chave)) return; // evita clique repetido em voo
     const estava = reveladas.has(chave);
-    // atualiza na hora e desfaz se o banco recusar
-    const novo = new Set(reveladas);
-    if (estava) novo.delete(chave);
-    else novo.add(chave);
-    setReveladas(novo);
+
+    setOcupadas((o) => new Set(o).add(chave));
+    aplicar(chave, !estava);
+    setErro(null);
     try {
       await (estava ? esconder(chave) : revelar(chave));
     } catch (e) {
       setErro((e as Error).message);
-      setReveladas(reveladas);
+      aplicar(chave, estava);
+    } finally {
+      setOcupadas((o) => {
+        const n = new Set(o);
+        n.delete(chave);
+        return n;
+      });
     }
   }
 
@@ -139,6 +160,8 @@ export default function PaginaCriaturas() {
 
                     {mestre && (
                       <button
+                        type="button"
+                        disabled={ocupadas.has(CHAVE_CRIATURA(c.chave))}
                         onClick={() => alternar(c)}
                         className={`absolute top-2 right-2 rounded-lg px-2.5 py-1 text-[10px] uppercase tracking-wider
                                     backdrop-blur transition-colors ${
