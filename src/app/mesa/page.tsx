@@ -78,6 +78,12 @@ export default function PaginaMesa() {
             Criaturas
           </Link>
           <Link
+            href="/dados"
+            className="fonte-display uppercase text-sm tracking-wide text-bone-dim hover:text-bone transition-colors"
+          >
+            Dados
+          </Link>
+          <Link
             href="/faccoes"
             className="fonte-display uppercase text-sm tracking-wide text-bone-dim hover:text-bone transition-colors"
           >

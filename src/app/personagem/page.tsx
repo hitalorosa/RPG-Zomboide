@@ -3,10 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { encerrarSessao, lerSessao, type Jogador } from "@/lib/jogadores";
-import { carregarPersonagem, type Personagem } from "@/lib/personagens";
+import {
+  carregarPersonagem,
+  salvarPersonagem,
+  type Personagem,
+} from "@/lib/personagens";
 import {
   acharEspecializacao,
   ATRIBUTOS,
+  CONDICOES,
   ESTADOS,
   type ChaveEstado,
 } from "@/lib/regras";
@@ -26,6 +31,9 @@ export default function PaginaPersonagem() {
   const [jogador, setJogador] = useState<Jogador | null>(null);
   const [p, setP] = useState<Personagem | null>(null);
   const [carregando, setCarregando] = useState(true);
+  const [editando, setEditando] = useState(false);
+  const [gravando, setGravando] = useState(false);
+  const [erroSalvar, setErroSalvar] = useState<string | null>(null);
 
   useEffect(() => {
     const sessao = lerSessao();
@@ -42,6 +50,32 @@ export default function PaginaPersonagem() {
       .catch(() => router.replace("/ficha"))
       .finally(() => setCarregando(false));
   }, [router]);
+
+  /** Grava sozinho pouco depois da última mexida, para não travar a mesa. */
+  useEffect(() => {
+    if (!p?.id || !editando) return;
+    const t = setTimeout(async () => {
+      setGravando(true);
+      setErroSalvar(null);
+      try {
+        await salvarPersonagem(p);
+      } catch (e) {
+        setErroSalvar((e as Error).message);
+      } finally {
+        setGravando(false);
+      }
+    }, 700);
+    return () => clearTimeout(t);
+  }, [p, editando]);
+
+  function ajustar(chave: ChaveEstado, delta: number) {
+    setP((a) => {
+      if (!a) return a;
+      const max = a[`${chave}_max` as keyof Personagem] as number;
+      const atual = a[chave] as number;
+      return { ...a, [chave]: Math.max(0, Math.min(max, atual + delta)) };
+    });
+  }
 
   if (carregando || !p || !jogador) return null;
 
@@ -104,8 +138,35 @@ export default function PaginaPersonagem() {
         </div>
 
         {/* ---------------------------- estado ---------------------------- */}
-        <Bloco titulo="Estado">
-          <div className="grid gap-3 sm:grid-cols-2">
+        <section className="mt-10">
+          <div className="flex items-center justify-between">
+            <h2 className="fonte-display uppercase text-sm tracking-[0.2em] text-rust">
+              Estado
+            </h2>
+            <div className="flex items-center gap-3">
+              {editando && (
+                <span className="text-[11px] text-bone-dim">
+                  {gravando ? "salvando…" : erroSalvar ? "" : "salvo"}
+                </span>
+              )}
+              <button
+                onClick={() => setEditando((v) => !v)}
+                className={`fonte-display uppercase tracking-wide rounded-lg border px-3.5 py-1.5 text-xs transition-colors ${
+                  editando
+                    ? "border-sage bg-surface-2 text-sage"
+                    : "border-line text-bone-dim hover:border-sage hover:text-bone"
+                }`}
+              >
+                {editando ? "Pronto" : "Editar"}
+              </button>
+            </div>
+          </div>
+
+          {erroSalvar && (
+            <p className="mt-2 text-xs text-perigo">{erroSalvar}</p>
+          )}
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {ESTADOS.map((e) => {
               const atual = p[e.chave] as number;
               const max = p[`${e.chave}_max` as keyof Personagem] as number;
@@ -121,26 +182,79 @@ export default function PaginaPersonagem() {
                       <span className="text-bone-dim">/{max}</span>
                     </span>
                   </div>
-                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
-                    <div
-                      className="h-full rounded-full transition-[width]"
-                      style={{
-                        width: `${pct}%`,
-                        backgroundColor: COR_ESTADO[e.chave],
-                      }}
-                    />
-                  </div>
+
+                  {editando ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => ajustar(e.chave, -1)}
+                        aria-label={`Menos 1 de ${e.nome}`}
+                        className="h-9 w-9 shrink-0 rounded-lg border border-line text-lg text-bone
+                                   transition-colors hover:border-sage"
+                      >
+                        −
+                      </button>
+                      <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-2">
+                        <div
+                          className="h-full rounded-full transition-[width]"
+                          style={{
+                            width: `${pct}%`,
+                            backgroundColor: COR_ESTADO[e.chave],
+                          }}
+                        />
+                      </div>
+                      <button
+                        onClick={() => ajustar(e.chave, 1)}
+                        aria-label={`Mais 1 de ${e.nome}`}
+                        className="h-9 w-9 shrink-0 rounded-lg border border-line text-lg text-bone
+                                   transition-colors hover:border-sage"
+                      >
+                        +
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
+                      <div
+                        className="h-full rounded-full transition-[width]"
+                        style={{
+                          width: `${pct}%`,
+                          backgroundColor: COR_ESTADO[e.chave],
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}
           </div>
 
-          {p.condicao !== "Normal" && (
-            <p className="mt-4 inline-block rounded-lg border border-perigo/60 px-3 py-1.5 text-sm text-perigo">
-              {p.condicao}
-            </p>
+          {editando ? (
+            <label className="mt-5 block">
+              <span className="block text-xs uppercase tracking-wider text-bone-dim mb-1.5">
+                Condição
+              </span>
+              <select
+                value={p.condicao}
+                onChange={(ev) =>
+                  setP((a) => (a ? { ...a, condicao: ev.target.value } : a))
+                }
+                className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-bone
+                           outline-none focus:border-sage"
+              >
+                {CONDICOES.map((c) => (
+                  <option key={c} value={c} className="bg-surface">
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            p.condicao !== "Normal" && (
+              <p className="mt-4 inline-block rounded-lg border border-perigo/60 px-3 py-1.5 text-sm text-perigo">
+                {p.condicao}
+              </p>
+            )
           )}
-        </Bloco>
+        </section>
 
         {/* --------------------------- atributos -------------------------- */}
         <Bloco titulo="Atributos">

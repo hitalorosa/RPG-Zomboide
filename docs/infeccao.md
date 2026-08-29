@@ -1,11 +1,11 @@
-# A Infecção — Estágios e o Sistema de Tipos
+# A Infecção, Estágios e o Sistema de Tipos
 
 Continuação de [`origem.md`](origem.md). Responde: como uma pessoa vira
 infectado, e **por que existem tipos diferentes se o fungo é um só**.
 
 ---
 
-# PARTE I — A regra mestra
+# PARTE I, A regra mestra
 
 > ## Qualquer mordida pode virar qualquer coisa.
 >
@@ -24,55 +24,55 @@ poderes aleatórios.
 
 ---
 
-# PARTE II — As três variáveis
+# PARTE II, As três variáveis
 
-### Variável 1 — COMPATIBILIDADE DO HOSPEDEIRO
+### Variável 1, COMPATIBILIDADE DO HOSPEDEIRO
 Nem todo corpo serve igual. Genética, química do sangue, resposta imune, massa,
 idade.
 
-- **Baixa** — o corpo resiste, a rede fica incompleta → infectado frágil, mal
+- **Baixa**: o corpo resiste, a rede fica incompleta → infectado frágil, mal
   formado, morre sozinho em semanas
-- **Média** — a esmagadora maioria → **Comum**
-- **Química atípica** — sangue e metabolismo que o fungo aproveita de um jeito
+- **Média**: a esmagadora maioria → **Comum**
+- **Química atípica**: sangue e metabolismo que o fungo aproveita de um jeito
   específico → **Ácido**
-- **Alta** — raríssimo. O fungo se instala como se o corpo tivesse sido feito
+- **Alta**: raríssimo. O fungo se instala como se o corpo tivesse sido feito
   para ele → **Alien**
 
 > A compatibilidade é invisível. **Ninguém sabe qual é a sua.** Você só descobre
-> quando é tarde — e a mesa não tem como saber se aquele NPC mordido vai virar
+> quando é tarde, e a mesa não tem como saber se aquele NPC mordido vai virar
 > um Comum ou algo muito pior.
 
-### Variável 2 — GRAU DE AVANÇO
+### Variável 2, GRAU DE AVANÇO
 Quanto mais tempo a rede tem, mais integrada ela fica.
 
 | Avanço | Resultado |
 |---|---|
-| Recente | desengonçado, lento — a rede ainda disputa com o sistema nervoso |
-| Consolidado **em corpo que permite** | **Corredor** — a tomada terminou, não há mais conflito |
+| Recente | desengonçado, lento a rede ainda disputa com o sistema nervoso |
+| Consolidado **em corpo que permite** | **Corredor** a tomada terminou, não há mais conflito |
 | Profundo, com mente ainda intacta | **Falante** |
 | Anos, com massa acumulada e outros corpos | **Gigante** |
 
 > ### Tempo é necessário, mas não é suficiente
 >
-> **Nem todo Comum vira Corredor.** O tempo só abre a possibilidade — quem
+> **Nem todo Comum vira Corredor.** O tempo só abre a possibilidade, quem
 > decide é o corpo (variável 1). A maioria esmagadora dos infectados **fica
 > Comum para sempre**, porque o hospedeiro nunca deu o que a rede precisava:
 > massa muscular, tendão íntegro, articulação inteira, nutrição.
 >
 > O que o tempo faz é **aumentar a proporção**. Cinco anos depois do colapso os
-> Corredores existem em quantidade relevante e assustadora — mas continuam
+> Corredores existem em quantidade relevante e assustadora, mas continuam
 > minoria. A rua ainda é dos Comuns.
 >
 > **Efeito de mesa:** o grupo nunca sabe qual é qual até um deles arrancar a
 > correr. Se todo infectado velho fosse Corredor, dava para calcular. Assim, não
 > dá.
 
-### Variável 3 — AMBIENTE DE MATURAÇÃO
+### Variável 3, AMBIENTE DE MATURAÇÃO
 Onde o corpo passou os dias em que a estrutura se formou.
 
 ---
 
-# PARTE III — A LEI DO FRIO
+# PARTE III, A LEI DO FRIO
 
 > ## Frio é onde o fungo fica bom. Calor é onde ele sofre.
 
@@ -87,7 +87,7 @@ barreira dos 37 °C (T2). Ele tolera nosso calor. Não gosta dele.
 **Isso inverte três instintos de sobrevivência de uma vez:**
 
 1. **Lugar frio não é abrigo. É ninho.** Porão, câmara fria, subsolo, montanha,
-   norte — é onde estão as coisas piores.
+   norte, é onde estão as coisas piores.
 2. **Calor é arma.** Fogo não é só dano: é o ambiente errado para o fungo.
    Caldeira, forno, deserto, telhado ao meio-dia são território defensável.
 3. **Estação úmida e fria é dois desastres ao mesmo tempo.** As pessoas viram
@@ -104,7 +104,7 @@ barreira dos 37 °C (T2). Ele tolera nosso calor. Não gosta dele.
 > organismo. **Aparece Estalador no calor. Aparece Couraçado onde não devia.**
 >
 > **Por que isso é melhor assim:** se a regra fosse absoluta, o grupo mapearia o
-> clima e saberia de antemão o que existe em cada lugar — e o medo acabaria. A
+> clima e saberia de antemão o que existe em cada lugar, e o medo acabaria. A
 > tendência dá aos jogadores uma leitura **útil mas não confiável**: eles
 > planejam com ela, e de vez em quando ela os trai.
 >
@@ -113,15 +113,15 @@ barreira dos 37 °C (T2). Ele tolera nosso calor. Não gosta dele.
 
 ---
 
-# PARTE IV — Os estágios
+# PARTE IV, Os estágios
 
 Caso comum: mordida, cepa Lázaro.
 
-### Estágio 0 — Exposição · *6 a 48 horas*
+### Estágio 0, Exposição · *6 a 48 horas*
 Nada. Nenhum sintoma. A ferida até cicatriza normal. É o que torna a mordida
 cruel: dá tempo de esperança.
 
-### Estágio 1 — A febre · *12 a 24 horas*
+### Estágio 1, A febre · *12 a 24 horas*
 Febre alta, calafrio, dor no corpo. Parece gripe forte.
 
 > **A febre não é sintoma. É a defesa.**
@@ -131,10 +131,10 @@ Febre alta, calafrio, dor no corpo. Parece gripe forte.
 > fungo tolera.
 >
 > Às vezes funciona em parte: quem sustenta febre muito alta atrasa a infecção
-> em dias. Quem não consegue — criança, idoso, desnutrido, imunossuprimido, quem
-> está com hipotermia — **vira mais rápido**.
+> em dias. Quem não consegue, criança, idoso, desnutrido, imunossuprimido, quem
+> está com hipotermia, **vira mais rápido**.
 
-### Estágio 2 — A rigidez, e o movimento alheio · *1 a 3 dias*
+### Estágio 2, A rigidez, e o movimento alheio · *1 a 3 dias*
 A rede alcança o músculo e se enreda nas fibras. Rigidez, câimbra que não passa,
 tremor. E então: um dedo que se mexe sozinho. Um braço que sobe.
 
@@ -144,22 +144,22 @@ foi ela. É este o estágio em que os primeiros infectados do mundo foram mandad
 
 **É aqui que a mesa decide o que fazer com um companheiro.**
 
-### Estágio 3 — A perda do comando · *horas*
+### Estágio 3, A perda do comando · *horas*
 A rede muscular passa a mandar mais que o sinal nervoso.
 
 A pessoa **não fica paralisada**. Continua sentindo, vendo, ouvindo, pensando.
 Só deixa de ser quem decide o movimento.
 
-*(É o mecanismo da vespa-joia na barata real: não paralisia — perda da vontade
+*(É o mecanismo da vespa-joia na barata real: não paralisia, perda da vontade
 de iniciar movimento.)*
 
-### Estágio 4 — O crescimento · *dias a semanas*
+### Estágio 4, O crescimento · *dias a semanas*
 A estrutura aparece. **É aqui que o tipo é decidido** pelas três variáveis.
 
-### Estágio 5 — Maturidade
+### Estágio 5, Maturidade
 O tipo está travado. O corpo é do fungo. E a pessoa continua lá.
 
-> **Sobre a consciência a longo prazo:** a mente nunca é removida — o fungo não
+> **Sobre a consciência a longo prazo:** a mente nunca é removida, o fungo não
 > toca o cérebro (T1). Mas anos sem dormir, sem falar e sem comandar nada
 > degradam qualquer um. O que resta depois de muito tempo já não é uma pessoa.
 > **Mas nunca foi arrancado. Se apagou sozinho.**
@@ -173,7 +173,7 @@ O tipo está travado. O corpo é do fungo. E a pessoa continua lá.
 
 | | |
 |---|---|
-| Mordida | — |
+| Mordida | |
 | +1 dia | febre |
 | +2 dias | rigidez · **última janela para conversar com a pessoa** |
 | +3 a 5 dias | perde o comando |
@@ -183,14 +183,14 @@ O tipo está travado. O corpo é do fungo. E a pessoa continua lá.
 **Calor forte e febre sustentada:** estique.
 
 > **Ferramenta de mesa:** o mordido tem **2 a 5 dias**, e o grupo sabe disso. Não
-> é sentença, é prazo. Dá tempo de tentar alguma coisa — e é justamente isso que
+> é sentença, é prazo. Dá tempo de tentar alguma coisa, e é justamente isso que
 > cria a decisão difícil.
 
 ---
 
-# PARTE V — O FREIO
+# PARTE V, O FREIO
 
-**Antifúngico sistêmico** — anfotericina B e azóis. Remédios reais, e exatamente
+**Antifúngico sistêmico**: anfotericina B e azóis. Remédios reais, e exatamente
 o que se usaria. Nas ruas viraram **"o Freio"**.
 
 ### Ele não cura. Ele para o relógio.
@@ -204,16 +204,16 @@ Isso significa que existem pessoas vivas em **todos os estágios**:
 
 | Congelado no | Como essa pessoa vive |
 |---|---|
-| **1 — febre** | O melhor caso. Febril crônico, fraco, mas funcional. |
-| **2 — rigidez** | Tremor, câimbra, e a mão que às vezes faz alguma coisa sozinha. **Trabalha. Conversa. Tem medo.** |
-| **3 — perda do comando** | Consciente e lúcido, sem iniciar movimento. Precisa de alguém para tudo. **E ouve tudo.** |
+| **1 febre** | O melhor caso. Febril crônico, fraco, mas funcional. |
+| **2 rigidez** | Tremor, câimbra, e a mão que às vezes faz alguma coisa sozinha. **Trabalha. Conversa. Tem medo.** |
+| **3 perda do comando** | Consciente e lúcido, sem iniciar movimento. Precisa de alguém para tudo. **E ouve tudo.** |
 
 ### O preço
-Antifúngico sistêmico é tóxico de verdade — os médicos apelidaram a
+Antifúngico sistêmico é tóxico de verdade, os médicos apelidaram a
 anfotericina de *"anfoterrível"* pelos efeitos colaterais. Rim e fígado pagam.
 
 > **Quem está no Freio troca a transformação por insuficiência renal.** Não é
-> salvação, é prestação — e quem toma sabe.
+> salvação, é prestação, e quem toma sabe.
 
 ### Por que ele governa o mundo
 - **Ninguém produz mais.** Só existe estoque, e estoque vencendo.
@@ -225,7 +225,7 @@ Um personagem no Freio carrega ao mesmo tempo um **contador de doses**, um
 **dano acumulado de órgão**, e a consciência de que qualquer sessão pode ser a
 última se o estoque não render.
 
-*(Ver [`campanha.md`](campanha.md) §3 — o Freio é o motor da campanha.)*
+*(Ver [`campanha.md`](campanha.md) §3, o Freio é o motor da campanha.)*
 
 ---
 
