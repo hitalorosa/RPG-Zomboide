@@ -14,6 +14,7 @@ import {
 } from "@/lib/dados";
 import { listarMesa } from "@/lib/personagens";
 import { supabaseConfigurado } from "@/lib/supabase";
+import { Dado } from "@/components/dado";
 
 export default function PaginaDados() {
   const [quem, setQuem] = useState("");
@@ -25,6 +26,7 @@ export default function PaginaDados() {
   const [rotulo, setRotulo] = useState("");
   const [historico, setHistorico] = useState<Rolagem[]>([]);
   const [ultima, setUltima] = useState<Rolagem | null>(null);
+  const [rolando, setRolando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
   const recarregar = useCallback(() => {
@@ -69,7 +71,10 @@ export default function PaginaDados() {
   }
 
   async function jogar() {
+    if (rolando) return;
     setErro(null);
+
+    // o resultado sai agora; a animação depois é só a cara da rolagem
     const resultados = rolar(lados, quantidade, vantagem);
     const total = totalizar(resultados, modificador, vantagem);
     const r: Rolagem = {
@@ -80,7 +85,11 @@ export default function PaginaDados() {
       modificador,
       total,
     };
+
     setUltima(r);
+    setRolando(true);
+    setTimeout(() => setRolando(false), 750);
+
     setHistorico((h) => [{ ...r, criado_em: new Date().toISOString() }, ...h]);
     try {
       await gravarRolagem(r);
@@ -136,19 +145,20 @@ export default function PaginaDados() {
           <p className="text-xs uppercase tracking-wider text-bone-dim mb-2">
             Dado
           </p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             {DADOS.map((d) => (
               <button
                 key={d}
                 onClick={() => setLados(d)}
                 aria-pressed={lados === d}
-                className={`fonte-display rounded-lg border px-4 py-2.5 text-base transition-colors ${
+                aria-label={`d${d}`}
+                className={`rounded-xl p-1 transition-all ${
                   lados === d
-                    ? "border-sage bg-surface-2 text-sage"
-                    : "border-line bg-surface text-bone hover:border-sage/50"
+                    ? "ring-2 ring-sage scale-105"
+                    : "opacity-55 hover:opacity-100"
                 }`}
               >
-                d{d}
+                <Dado lados={d} valor={d} rolando={false} tamanho={46} />
               </button>
             ))}
           </div>
@@ -197,40 +207,76 @@ export default function PaginaDados() {
 
         <button
           onClick={jogar}
+          disabled={rolando}
           className="fonte-display uppercase tracking-wide mt-4 w-full rounded-xl bg-rust py-4 text-xl text-bone
-                     transition-opacity hover:opacity-90"
+                     transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          Girar {descreverFormula(lados, quantidade, vantagem, modificador)}
+          {rolando
+            ? "Rolando…"
+            : `Girar ${descreverFormula(lados, quantidade, vantagem, modificador)}`}
         </button>
 
         {/* -------------------------- resultado --------------------------- */}
         {ultima && (
           <div
-            className={`mt-6 rounded-2xl border p-6 text-center ${
-              critico === "alto"
-                ? "border-sage bg-sage/10"
-                : critico === "baixo"
-                  ? "border-perigo bg-perigo/10"
-                  : "border-line bg-surface/50"
+            className={`mt-6 rounded-2xl border p-6 ${
+              rolando
+                ? "border-line bg-surface/50"
+                : critico === "alto"
+                  ? "border-sage bg-sage/10"
+                  : critico === "baixo"
+                    ? "border-perigo bg-perigo/10"
+                    : "border-line bg-surface/50"
             }`}
           >
-            <p className="text-xs uppercase tracking-wider text-bone-dim">
+            <p className="text-center text-xs uppercase tracking-wider text-bone-dim">
               {ultima.quem}
               {ultima.rotulo && ` · ${ultima.rotulo}`}
             </p>
-            <p className="fonte-display text-6xl text-bone leading-none mt-2">
-              {ultima.total}
-            </p>
-            <p className="mt-2 text-sm text-bone-dim">
-              {ultima.formula} · saiu [{ultima.resultados.join(", ")}]
-            </p>
-            {critico === "alto" && (
-              <p className="fonte-display uppercase text-sage mt-2">
+
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+              {ultima.resultados.map((v, i) => (
+                <Dado
+                  key={i}
+                  lados={lados}
+                  valor={v}
+                  rolando={rolando}
+                  tamanho={ultima.resultados.length > 4 ? 64 : 92}
+                  destaque={
+                    // com vantagem, marca o que valeu e apaga o outro
+                    ultima.resultados.length === 2 &&
+                    ultima.formula.includes("maior")
+                      ? !rolando && v === Math.max(...ultima.resultados) &&
+                        ultima.resultados.indexOf(v) === i
+                      : undefined
+                  }
+                />
+              ))}
+
+              {ultima.modificador !== 0 && (
+                <span className="fonte-display text-3xl text-bone-dim">
+                  {ultima.modificador > 0 ? "+" : "−"}
+                  {Math.abs(ultima.modificador)}
+                </span>
+              )}
+            </div>
+
+            <div className="mt-4 flex items-baseline justify-center gap-2">
+              <span className="text-xs uppercase tracking-wider text-bone-dim">
+                Total
+              </span>
+              <span className="fonte-display text-6xl leading-none text-bone tabular-nums">
+                {rolando ? "…" : ultima.total}
+              </span>
+            </div>
+
+            {!rolando && critico === "alto" && (
+              <p className="fonte-display uppercase text-center text-sage mt-2">
                 20 natural
               </p>
             )}
-            {critico === "baixo" && (
-              <p className="fonte-display uppercase text-perigo mt-2">
+            {!rolando && critico === "baixo" && (
+              <p className="fonte-display uppercase text-center text-perigo mt-2">
                 1 natural
               </p>
             )}

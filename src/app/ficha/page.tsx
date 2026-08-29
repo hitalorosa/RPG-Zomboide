@@ -17,6 +17,7 @@ import {
   ESTADOS,
   FORMULA_TEXTO,
   PONTOS_INICIAIS,
+  armasDe,
   calcularMaximos,
   type ChaveAtributo,
 } from "@/lib/regras";
@@ -319,30 +320,61 @@ export default function PaginaFicha() {
         </Secao>
 
         {/* ---------------------------- inventário ---------------------- */}
-        <Secao titulo="Inventário">
-          <Campo
-            rotulo="Arma"
-            valor={p.arma}
-            aoMudar={(v) => mudar("arma", v)}
-            placeholder="Facão, pé de cabra, revólver…"
-          />
+        <Secao
+          titulo="Inventário"
+          aviso={
+            espec
+              ? "A arma vem da sua especialização, e cada uma soma um atributo diferente na rolagem."
+              : "Escolha a especialização primeiro para ver as armas."
+          }
+        >
+          {espec && (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {armasDe(espec.chave)?.map((a) => {
+                const escolhida = p.arma === a.nome;
+                const atrib = ATRIBUTOS.find((x) => x.chave === a.atributo)!;
+                return (
+                  <button
+                    key={a.chave}
+                    type="button"
+                    onClick={() => {
+                      mudar("arma", a.nome);
+                      setP((x) =>
+                        x ? { ...x, arma_barulhenta: a.barulhenta } : x
+                      );
+                    }}
+                    className={`text-left rounded-xl border px-4 py-3 transition-colors ${
+                      escolhida
+                        ? "border-sage bg-surface-2"
+                        : "border-line bg-surface hover:border-sage/50"
+                    }`}
+                  >
+                    <span
+                      className={`fonte-display uppercase block ${
+                        escolhida ? "text-sage" : "text-bone"
+                      }`}
+                    >
+                      {a.nome}
+                    </span>
 
-          <label className="mt-3 flex items-center gap-3 rounded-xl border border-line bg-surface/40 px-4 py-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={p.arma_barulhenta}
-              onChange={(e) => mudar("arma_barulhenta", e.target.checked)}
-              className="h-5 w-5 accent-[var(--color-rust)]"
-            />
-            <span className="text-sm text-bone">
-              Barulhenta
-              <span className="block text-xs text-bone-dim">
-                Barulho convoca. Marque se o uso faz som.
-              </span>
-            </span>
-          </label>
+                    <span className="mt-1.5 flex flex-wrap gap-1.5">
+                      <Etiqueta>{atrib.nome}</Etiqueta>
+                      <Etiqueta>{a.dano}</Etiqueta>
+                      <Etiqueta perigo={a.barulhenta}>
+                        {a.barulhenta ? "barulhenta" : "silenciosa"}
+                      </Etiqueta>
+                    </span>
 
-          <div className="mt-3">
+                    <span className="mt-2 block text-xs leading-relaxed text-bone-dim">
+                      {a.nota}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="mt-4">
             <Area
               rotulo="Itens"
               valor={p.itens}
@@ -464,5 +496,23 @@ export default function PaginaFicha() {
         </div>
       </div>
     </main>
+  );
+}
+
+function Etiqueta({
+  children,
+  perigo,
+}: {
+  children: React.ReactNode;
+  perigo?: boolean;
+}) {
+  return (
+    <span
+      className={`rounded-md px-1.5 py-0.5 text-[10px] uppercase tracking-wide ${
+        perigo ? "bg-perigo/20 text-perigo" : "bg-sage/15 text-sage"
+      }`}
+    >
+      {children}
+    </span>
   );
 }

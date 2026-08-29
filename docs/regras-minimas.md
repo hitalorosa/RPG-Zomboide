@@ -32,16 +32,27 @@ Quando a ação é da especialização do personagem, **role 2d20 e use o maior.
 
 ## 2. Dano
 
-| Arma | Dano | |
-|---|---|---|
-| Improvisada (faca, cano, garrafa) | **1d4** | silenciosa |
-| Média (facão, machado, pé de cabra) | **1d6** | silenciosa |
-| Pesada (marreta, foice, enxada) | **1d8** | silenciosa, e lenta |
-| Arco ou besta | **1d6** | silenciosa |
-| Arma de fogo | **2d6** | **barulhenta** |
-| Fogo | **1d6 por rodada** | e não para sozinho |
+**A arma não é texto livre: vem da especialização, e cada uma soma um atributo
+diferente.** Duas opções por classe, escolhidas na ficha.
 
-**Força soma no corpo a corpo. Percepção soma no que é mirado.**
+| Classe | Arma | Atributo | Dano | |
+|---|---|---|---|---|
+| **Rastreador** | Arco de bambu | Percepção | 1d6 | silenciosa |
+| | Facão de mato | Força | 1d6 | silenciosa |
+| **Combatente** | Marreta | Força | 1d8 | silenciosa, e lenta |
+| | Espingarda | Percepção | 2d6 | **barulhenta** |
+| **Médico** | Bisturi de campo | Agilidade | 1d4 | silenciosa |
+| | Machadinha de resgate | Força | 1d6 | silenciosa |
+| **Mecânico** | Chave de grifo | Força | 1d6 | silenciosa |
+| | Maçarico portátil | Intelecto | 1d6 por rodada | fogo, e denuncia pela luz |
+| **Negociador** | Revólver | Percepção | 2d6 | **barulhenta** |
+| | Cassetete | Força | 1d6 | silenciosa |
+
+> **O atributo da arma soma na rolagem de ataque.** É por isso que a escolha
+> importa: um Combatente que colocou tudo em Força quer a marreta, e um que
+> dividiu com Percepção pode preferir a espingarda.
+
+**Fogo, de qualquer fonte: 1d6 por rodada, e não para sozinho.**
 
 ### Quanto aguenta um infectado
 

@@ -64,3 +64,38 @@ select,
 textarea {
   font-size: 16px;
 }
+
+/* ---------------------------------------------------------------
+   Dados
+--------------------------------------------------------------- */
+
+@keyframes chacoalhar {
+  0%   { transform: rotate(0deg)    scale(1);    }
+  20%  { transform: rotate(-18deg)  scale(1.06); }
+  40%  { transform: rotate(14deg)   scale(0.96); }
+  60%  { transform: rotate(-10deg)  scale(1.04); }
+  80%  { transform: rotate(8deg)    scale(0.98); }
+  100% { transform: rotate(0deg)    scale(1);    }
+}
+
+@keyframes assentar {
+  0%   { transform: scale(1.28); }
+  55%  { transform: scale(0.94); }
+  100% { transform: scale(1);    }
+}
+
+.dado-rolando {
+  animation: chacoalhar 0.32s linear infinite;
+}
+
+.dado-parou {
+  animation: assentar 0.34s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+/* Quem prefere menos movimento não leva sacudida nenhuma. */
+@media (prefers-reduced-motion: reduce) {
+  .dado-rolando,
+  .dado-parou {
+    animation: none;
+  }
+}
