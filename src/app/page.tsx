@@ -98,6 +98,9 @@ export default function PaginaEntrada() {
             maxLength={24}
             placeholder="Entrar com outro nome"
             aria-label="Seu nome"
+            enterKeyHint="go"
+            autoComplete="off"
+            spellCheck={false}
             className="flex-1 rounded-xl border border-line bg-surface px-4 py-3
                        text-bone placeholder:text-bone-dim/60
                        focus:border-sage outline-none transition-colors"
