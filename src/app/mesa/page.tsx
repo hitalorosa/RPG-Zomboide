@@ -11,45 +11,134 @@ import { acharEspecializacao, ATRIBUTOS, ESTADOS } from "@/lib/regras";
 import { MAPAS, MAPA_PADRAO } from "@/lib/mapas";
 import { supabaseConfigurado } from "@/lib/supabase";
 
+const COR_ESTADO: Record<string, string> = {
+  vida: "var(--color-rust)",
+  sanidade: "var(--color-sage)",
+  medo: "var(--color-ochre)",
+  panico: "var(--color-perigo)",
+  estresse: "var(--color-ochre)",
+  fadiga: "var(--color-bone-dim)",
+};
+
 export default function PaginaMesa() {
   const [linhas, setLinhas] = useState<LinhaMesa[]>([]);
-  const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [aberto, setAberto] = useState<LinhaMesa | null>(null);
   const [mapa, setMapa] = useState(MAPA_PADRAO);
-  const [telaCheia, setTelaCheia] = useState(false);
+  const [doses, setDoses] = useState(0);
 
   function recarregar() {
     listarMesa()
       .then(setLinhas)
-      .catch((e: Error) => setErro(e.message))
-      .finally(() => setCarregando(false));
+      .catch((e: Error) => setErro(e.message));
   }
 
-  useEffect(recarregar, []);
-
-  // Esc fecha a tela cheia do mapa
   useEffect(() => {
-    if (!telaCheia) return;
-    const f = (e: KeyboardEvent) => e.key === "Escape" && setTelaCheia(false);
-    window.addEventListener("keydown", f);
-    return () => window.removeEventListener("keydown", f);
-  }, [telaCheia]);
+    recarregar();
+    try {
+      const d = window.localStorage.getItem("zomboide:doses");
+      if (d) setDoses(Number(d) || 0);
+    } catch {}
+  }, []);
+
+  function mudarDoses(n: number) {
+    const v = Math.max(0, n);
+    setDoses(v);
+    try {
+      window.localStorage.setItem("zomboide:doses", String(v));
+    } catch {}
+  }
+
+  const indice = MAPAS.findIndex((m) => m.chave === mapa.chave);
+  const irPara = (n: number) =>
+    setMapa(MAPAS[(n + MAPAS.length) % MAPAS.length]);
 
   return (
-    <main className="flex-1 px-5 py-10">
-      <div className="mx-auto w-full max-w-5xl">
-        <p className="fonte-display text-xs tracking-[0.3em] text-rust">
-          NARRADOR
-        </p>
-        <h1 className="fonte-display uppercase text-bone text-3xl sm:text-4xl leading-none mt-1">
-          A mesa
-        </h1>
-        <div className="mt-4 h-px w-full bg-line" />
+    <div className="h-dvh overflow-hidden flex flex-col">
+      {/* ============================ topo ============================= */}
+      <header className="shrink-0 flex items-center justify-between gap-4 px-5 py-3 border-b border-line">
+        <nav className="flex items-center gap-5">
+          <button
+            disabled
+            title="Ainda não construído"
+            className="fonte-display uppercase text-sm sm:text-base tracking-wide text-bone-dim/40 cursor-not-allowed"
+          >
+            Criaturas
+          </button>
+          <button
+            disabled
+            title="Ainda não construído"
+            className="fonte-display uppercase text-sm sm:text-base tracking-wide text-bone-dim/40 cursor-not-allowed"
+          >
+            Facções conhecidas
+          </button>
+        </nav>
 
-        {/* ----------------------------- mapas ---------------------------- */}
-        <section className="mt-8">
-          <div className="flex flex-wrap gap-2">
+        {/* doses de Freio */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => mudarDoses(doses - 1)}
+            aria-label="Menos uma dose"
+            className="h-8 w-8 rounded-lg border border-line text-bone-dim hover:border-sage hover:text-bone transition-colors"
+          >
+            −
+          </button>
+          <span className="fonte-display text-2xl sm:text-3xl tabular-nums text-bone">
+            {doses}
+            <span className="text-bone-dim text-lg">×</span>
+          </span>
+          <span className="text-2xl" title="Doses de Freio">
+            💉
+          </span>
+          <button
+            onClick={() => mudarDoses(doses + 1)}
+            aria-label="Mais uma dose"
+            className="h-8 w-8 rounded-lg border border-line text-bone-dim hover:border-sage hover:text-bone transition-colors"
+          >
+            +
+          </button>
+        </div>
+      </header>
+
+      {/* ============================ mapa ============================= */}
+      <section className="flex-1 min-h-0 relative flex items-center justify-center p-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={mapa.arquivo}
+          alt={`Mapa: ${mapa.nome}`}
+          className="max-h-full max-w-full object-contain rounded-xl"
+        />
+
+        {/* nome do mapa, sobre a imagem */}
+        <div className="pointer-events-none absolute top-5 left-1/2 -translate-x-1/2">
+          <span className="fonte-display uppercase tracking-[0.2em] text-lg sm:text-xl text-bone drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+            {mapa.nome}
+          </span>
+        </div>
+
+        {/* setas, sobre a imagem */}
+        <button
+          onClick={() => irPara(indice - 1)}
+          aria-label="Mapa anterior"
+          className="absolute left-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full
+                     bg-ink/70 border border-line text-bone backdrop-blur
+                     hover:border-sage hover:text-sage transition-colors"
+        >
+          ‹
+        </button>
+        <button
+          onClick={() => irPara(indice + 1)}
+          aria-label="Próximo mapa"
+          className="absolute right-4 top-1/2 -translate-y-1/2 h-11 w-11 rounded-full
+                     bg-ink/70 border border-line text-bone backdrop-blur
+                     hover:border-sage hover:text-sage transition-colors"
+        >
+          ›
+        </button>
+
+        {/* seletor, sobre a imagem */}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 max-w-[95%] overflow-x-auto">
+          <div className="flex gap-1.5 rounded-full bg-ink/75 border border-line px-2 py-1.5 backdrop-blur">
             {MAPAS.map((m) => {
               const ativo = m.chave === mapa.chave;
               return (
@@ -57,10 +146,10 @@ export default function PaginaMesa() {
                   key={m.chave}
                   onClick={() => setMapa(m)}
                   aria-pressed={ativo}
-                  className={`fonte-display uppercase rounded-lg border px-3.5 py-2 text-sm tracking-wide transition-colors ${
+                  className={`fonte-display uppercase whitespace-nowrap rounded-full px-3 py-1.5 text-xs tracking-wide transition-colors ${
                     ativo
-                      ? "border-sage bg-surface-2 text-sage"
-                      : "border-line bg-surface text-bone-dim hover:border-sage/50 hover:text-bone"
+                      ? "bg-sage/25 text-sage"
+                      : "text-bone-dim hover:text-bone"
                   }`}
                 >
                   {m.nome}
@@ -68,79 +157,31 @@ export default function PaginaMesa() {
               );
             })}
           </div>
+        </div>
+      </section>
 
-          <button
-            onClick={() => setTelaCheia(true)}
-            title="Abrir em tela cheia"
-            className="mt-4 block w-full overflow-hidden rounded-2xl border border-line
-                       transition-colors hover:border-sage"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={mapa.arquivo}
-              alt={`Mapa: ${mapa.nome}`}
-              className="w-full object-contain bg-surface"
-            />
-          </button>
-
-          <p className="mt-2 text-center text-xs text-bone-dim/70">
-            Clique no mapa para abrir em tela cheia
-          </p>
-        </section>
-
-        {erro && <p className="mt-6 text-sm text-perigo">{erro}</p>}
-
-        <h2 className="fonte-display uppercase text-sm tracking-[0.2em] text-rust mt-12">
-          Sobreviventes
-        </h2>
-
-        {carregando ? (
-          <p className="mt-4 text-sm text-bone-dim">Carregando…</p>
+      {/* ========================= sobreviventes ======================== */}
+      <footer className="shrink-0 border-t border-line px-4 py-3">
+        {erro ? (
+          <p className="text-center text-xs text-perigo">{erro}</p>
         ) : linhas.length === 0 ? (
-          <p className="mt-4 text-sm text-bone-dim">Ninguém entrou ainda.</p>
-        ) : (
-          <ul className="mt-4 divide-y divide-line rounded-xl border border-line overflow-hidden">
-            {linhas.map((l) => {
-              const esp = acharEspecializacao(l.personagem?.especializacao);
-              return (
-                <li
-                  key={l.jogador.id}
-                  className="flex items-center gap-4 bg-surface/40 px-4 py-4"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="fonte-display uppercase text-bone truncate">
-                      {l.personagem?.nome?.trim() || l.jogador.nome}
-                    </p>
-                    <p className="text-xs text-bone-dim truncate">
-                      {l.jogador.nome}
-                      {esp ? ` · ${esp.nome}` : " · sem ficha"}
-                      {l.personagem?.condicao &&
-                      l.personagem.condicao !== "Normal"
-                        ? ` · ${l.personagem.condicao}`
-                        : ""}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => setAberto(l)}
-                    aria-label={`Abrir ficha de ${l.jogador.nome}`}
-                    className="shrink-0 h-10 w-10 rounded-lg border border-line text-bone-dim
-                               transition-colors hover:border-sage hover:text-bone"
-                  >
-                    ⋯
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        {!supabaseConfigurado && (
-          <p className="mt-8 text-xs text-bone-dim/70">
-            Banco não conectado — só aparece quem entrou neste navegador.
+          <p className="text-center text-xs text-bone-dim">
+            {supabaseConfigurado
+              ? "Ninguém entrou ainda."
+              : "Banco não conectado."}
           </p>
+        ) : (
+          <div className="flex gap-3 overflow-x-auto">
+            {linhas.map((l) => (
+              <CartaoJogador
+                key={l.jogador.id}
+                linha={l}
+                aoAbrir={() => setAberto(l)}
+              />
+            ))}
+          </div>
         )}
-      </div>
+      </footer>
 
       {aberto && (
         <Painel
@@ -152,34 +193,71 @@ export default function PaginaMesa() {
           }}
         />
       )}
-
-      {/* ------------------------- mapa em tela cheia ------------------- */}
-      {telaCheia && (
-        <div
-          onClick={() => setTelaCheia(false)}
-          className="fixed inset-0 z-30 flex flex-col bg-ink"
-        >
-          <div className="flex items-center justify-between px-5 py-3 border-b border-line">
-            <span className="fonte-display uppercase tracking-wide text-sage">
-              {mapa.nome}
-            </span>
-            <span className="text-xs text-bone-dim">
-              Clique ou Esc para fechar
-            </span>
-          </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={mapa.arquivo}
-            alt={`Mapa: ${mapa.nome}`}
-            className="flex-1 min-h-0 w-full object-contain p-3"
-          />
-        </div>
-      )}
-    </main>
+    </div>
   );
 }
 
-/* ------------------------------- painel ------------------------------- */
+/* --------------------------- cartão do jogador -------------------------- */
+
+function CartaoJogador({
+  linha,
+  aoAbrir,
+}: {
+  linha: LinhaMesa;
+  aoAbrir: () => void;
+}) {
+  const p = linha.personagem;
+
+  return (
+    <button
+      onClick={aoAbrir}
+      className="shrink-0 w-52 rounded-xl border border-line bg-surface/50 px-3 py-2.5 text-left
+                 transition-colors hover:border-sage"
+    >
+      <div className="flex items-baseline justify-between gap-2">
+        <span className="fonte-display uppercase text-sm text-bone truncate">
+          {p?.nome?.trim() || linha.jogador.nome}
+        </span>
+        {p?.condicao && p.condicao !== "Normal" && (
+          <span className="shrink-0 text-[9px] uppercase text-perigo">
+            {p.condicao}
+          </span>
+        )}
+      </div>
+
+      {!p ? (
+        <p className="mt-2 text-[11px] text-bone-dim">Sem ficha</p>
+      ) : (
+        <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1">
+          {ESTADOS.map((e) => {
+            const atual = p[e.chave] as number;
+            const max = p[`${e.chave}_max` as keyof Personagem] as number;
+            const pct = max > 0 ? Math.min(100, (atual / max) * 100) : 0;
+            return (
+              <div key={e.chave}>
+                <div className="flex justify-between text-[9px] uppercase text-bone-dim leading-tight">
+                  <span>{e.nome.slice(0, 4)}</span>
+                  <span className="tabular-nums text-bone">{atual}</span>
+                </div>
+                <div className="h-1 w-full overflow-hidden rounded-full bg-surface-2">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${pct}%`,
+                      backgroundColor: COR_ESTADO[e.chave],
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </button>
+  );
+}
+
+/* ------------------------------- painel -------------------------------- */
 
 function Painel({
   linha,
@@ -212,7 +290,7 @@ function Painel({
 
   return (
     <div
-      className="fixed inset-0 z-20 flex items-end sm:items-center justify-center bg-black/70 p-0 sm:p-6"
+      className="fixed inset-0 z-30 flex items-end sm:items-center justify-center bg-black/75 sm:p-6"
       onClick={aoFechar}
     >
       <div
@@ -244,29 +322,26 @@ function Painel({
           </p>
         ) : (
           <>
-            {/* --------------------- descrição visual -------------------- */}
             <Bloco titulo="Descrição visual">
               {p.descricao_visual?.trim() ? (
-                <p className="whitespace-pre-wrap text-sm leading-relaxed text-bone">
-                  {p.descricao_visual}
-                </p>
+                <>
+                  <p className="whitespace-pre-wrap text-sm leading-relaxed text-bone">
+                    {p.descricao_visual}
+                  </p>
+                  <button
+                    onClick={() =>
+                      navigator.clipboard?.writeText(p.descricao_visual)
+                    }
+                    className="mt-3 text-xs uppercase tracking-wider text-bone-dim hover:text-sage transition-colors"
+                  >
+                    Copiar descrição
+                  </button>
+                </>
               ) : (
                 <p className="text-sm text-bone-dim">Não preencheu.</p>
               )}
-
-              {p.descricao_visual?.trim() && (
-                <button
-                  onClick={() =>
-                    navigator.clipboard?.writeText(p.descricao_visual)
-                  }
-                  className="mt-3 text-xs uppercase tracking-wider text-bone-dim hover:text-sage transition-colors"
-                >
-                  Copiar descrição
-                </button>
-              )}
             </Bloco>
 
-            {/* -------------------------- retrato ------------------------ */}
             <Bloco titulo="Retrato">
               {p.retrato_url && (
                 /* eslint-disable-next-line @next/next/no-img-element */
@@ -280,15 +355,14 @@ function Painel({
                 <input
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="Colar link da imagem gerada"
+                  placeholder="/retratos/nome.png"
                   className="flex-1 rounded-xl border border-line bg-surface px-3 py-2.5 text-sm text-bone
                              placeholder:text-bone-dim/50 outline-none focus:border-sage"
                 />
                 <button
                   onClick={gravarRetrato}
                   disabled={salvando}
-                  className="fonte-display uppercase rounded-xl bg-rust px-4 py-2.5 text-sm text-bone
-                             disabled:opacity-30"
+                  className="fonte-display uppercase rounded-xl bg-rust px-4 py-2.5 text-sm text-bone disabled:opacity-30"
                 >
                   {salvando ? "…" : "Salvar"}
                 </button>
@@ -296,7 +370,6 @@ function Painel({
               {erro && <p className="mt-2 text-xs text-perigo">{erro}</p>}
             </Bloco>
 
-            {/* ------------------------- atributos ----------------------- */}
             <Bloco titulo="Atributos">
               <div className="grid grid-cols-5 gap-2 text-center">
                 {ATRIBUTOS.map((a) => (
@@ -318,29 +391,6 @@ function Painel({
               )}
             </Bloco>
 
-            {/* --------------------------- estado ------------------------ */}
-            <Bloco titulo="Estado">
-              <div className="grid grid-cols-3 gap-2 text-center">
-                {ESTADOS.map((e) => (
-                  <div key={e.chave} className="rounded-lg border border-line py-2">
-                    <div className="fonte-display text-lg text-bone">
-                      {p[e.chave] as number}
-                      <span className="text-bone-dim text-sm">
-                        /{p[`${e.chave}_max` as keyof Personagem] as number}
-                      </span>
-                    </div>
-                    <div className="text-[10px] uppercase text-bone-dim">
-                      {e.nome}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="mt-3 text-xs text-bone-dim">
-                Condição: <span className="text-bone">{p.condicao}</span>
-              </p>
-            </Bloco>
-
-            {/* --------------------------- perfil ------------------------ */}
             <Bloco titulo="Perfil">
               <Linha rotulo="Qualidade" valor={p.qualidade} />
               <Linha rotulo="Defeito" valor={p.defeito} />
