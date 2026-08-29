@@ -21,7 +21,6 @@ import {
   type ChaveAtributo,
 } from "@/lib/regras";
 import { Area, Campo, Contador, Secao } from "@/components/campos";
-import { Avatar } from "@/components/avatar";
 import { supabaseConfigurado } from "@/lib/supabase";
 
 export default function PaginaFicha() {
@@ -119,22 +118,13 @@ export default function PaginaFicha() {
       <div className="mx-auto w-full max-w-2xl">
         {/* cabeçalho */}
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push("/personagem")}
-              aria-label="Editar aparência"
-              className="shrink-0 rounded-full border border-line transition-colors hover:border-sage"
-            >
-              <Avatar a={p.aparencia} className="h-14 w-14" />
-            </button>
-            <div>
-              <p className="fonte-display text-xs tracking-[0.3em] text-rust">
-                {jogador.nome.toUpperCase()}
-              </p>
-              <h1 className="fonte-display uppercase text-bone text-2xl sm:text-4xl leading-none mt-1">
-                Preencha a ficha
-              </h1>
-            </div>
+          <div>
+            <p className="fonte-display text-xs tracking-[0.3em] text-rust">
+              {jogador.nome.toUpperCase()}
+            </p>
+            <h1 className="fonte-display uppercase text-bone text-3xl sm:text-4xl leading-none mt-1">
+              Preencha a ficha
+            </h1>
           </div>
           <button
             onClick={() => {
@@ -383,6 +373,44 @@ export default function PaginaFicha() {
               placeholder="O que esse personagem faz pra recuperar a cabeça"
             />
           </div>
+        </Secao>
+
+        {/* ---------------------------- aparência ----------------------- */}
+        <Secao
+          titulo="Aparência"
+          aviso="Descreva como o personagem é de olhar. O narrador usa esse texto para gerar o retrato dele."
+        >
+          <Area
+            rotulo="Descrição visual"
+            valor={p.descricao_visual}
+            aoMudar={(v) => mudar("descricao_visual", v)}
+            placeholder={
+              "Idade aparente, tipo físico, tom de pele\n" +
+              "Cabelo: cor, comprimento, como usa\n" +
+              "Rosto: barba, olhos, expressão de sempre\n" +
+              "Roupa que não tira nunca\n" +
+              "Cicatriz, tatuagem, algo que marca"
+            }
+            linhas={8}
+          />
+
+          {p.retrato_url ? (
+            <div className="mt-4">
+              <p className="text-xs uppercase tracking-wider text-bone-dim mb-2">
+                Retrato
+              </p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={p.retrato_url}
+                alt="Retrato do personagem"
+                className="w-44 rounded-xl border border-line"
+              />
+            </div>
+          ) : (
+            <p className="mt-3 text-xs text-bone-dim/70">
+              O retrato aparece aqui depois que o narrador gerar.
+            </p>
+          )}
         </Secao>
 
         {/* ----------------------------- história ----------------------- */}

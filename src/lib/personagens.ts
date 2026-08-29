@@ -1,8 +1,6 @@
 import { supabase, supabaseConfigurado } from "./supabase";
-import { APARENCIA_PADRAO, type Aparencia } from "./aparencia";
 
 export type Personagem = {
-  aparencia: Aparencia;
   id?: string;
   jogador_id: string;
   ativo: boolean;
@@ -45,13 +43,14 @@ export type Personagem = {
   como_se_acalma: string;
 
   historia: string;
+  descricao_visual: string;
+  retrato_url: string;
 };
 
 export function personagemVazio(jogadorId: string): Personagem {
   return {
     jogador_id: jogadorId,
     ativo: true,
-    aparencia: { ...APARENCIA_PADRAO },
     nome: "",
     idade: "",
     pronomes: "",
@@ -84,6 +83,8 @@ export function personagemVazio(jogadorId: string): Personagem {
     maior_medo: "",
     como_se_acalma: "",
     historia: "",
+    descricao_visual: "",
+    retrato_url: "",
   };
 }
 
@@ -103,24 +104,17 @@ export async function carregarPersonagem(
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    return data ? normalizar(data as Personagem) : null;
+    return (data as Personagem) ?? null;
   }
 
   try {
     const bruto = window.localStorage.getItem(chaveLocal(jogadorId));
-    return bruto ? normalizar(JSON.parse(bruto) as Personagem) : null;
+    return bruto ? (JSON.parse(bruto) as Personagem) : null;
   } catch {
     return null;
   }
 }
 
-/** Fichas criadas antes da caracterização não têm aparência — completa. */
-function normalizar(p: Personagem): Personagem {
-  return {
-    ...p,
-    aparencia: { ...APARENCIA_PADRAO, ...(p.aparencia ?? {}) },
-  };
-}
 
 /* ------------------------------- escrita ----------------------------- */
 
@@ -158,4 +152,52 @@ export async function salvarPersonagem(p: Personagem): Promise<Personagem> {
     /* segue sem persistir */
   }
   return comId;
+}
+
+/* ------------------------------- a mesa ------------------------------ */
+
+export type LinhaMesa = {
+  jogador: { id: string; nome: string };
+  personagem: Personagem | null;
+};
+
+/** Todos os jogadores com o personagem ativo de cada um. Usado na admin. */
+export async function listarMesa(): Promise<LinhaMesa[]> {
+  if (supabaseConfigurado && supabase) {
+    const [{ data: jogadores, error: e1 }, { data: fichas, error: e2 }] =
+      await Promise.all([
+        supabase.from("jogadores").select("id, nome").order("criado_em"),
+        supabase.from("personagens").select("*").eq("ativo", true),
+      ]);
+
+    if (e1) throw new Error(e1.message);
+    if (e2) throw new Error(e2.message);
+
+    const porJogador = new Map<string, Personagem>();
+    for (const f of (fichas ?? []) as Personagem[]) {
+      porJogador.set(f.jogador_id, f);
+    }
+
+    return (jogadores ?? []).map((j) => ({
+      jogador: j,
+      personagem: porJogador.get(j.id) ?? null,
+    }));
+  }
+
+  // fallback local: só dá para ver quem está neste navegador
+  try {
+    const bruto = window.localStorage.getItem("zomboide:jogadores");
+    const jogadores = bruto
+      ? (JSON.parse(bruto) as { id: string; nome: string }[])
+      : [];
+    return jogadores.map((j) => {
+      const f = window.localStorage.getItem(chaveLocal(j.id));
+      return {
+        jogador: j,
+        personagem: f ? (JSON.parse(f) as Personagem) : null,
+      };
+    });
+  } catch {
+    return [];
+  }
 }
