@@ -2,7 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { encerrarSessao, lerSessao, type Jogador } from "@/lib/jogadores";
+import {
+  encerrarSessao,
+  garantirSessao,
+  type Jogador,
+} from "@/lib/jogadores";
 import {
   carregarPersonagem,
   personagemVazio,
@@ -37,18 +41,20 @@ export default function PaginaFicha() {
   /* ------------------------------ carga ------------------------------ */
 
   useEffect(() => {
-    const sessao = lerSessao();
-    if (!sessao) {
-      router.replace("/");
-      return;
-    }
-    setJogador(sessao);
-
-    carregarPersonagem(sessao.id)
-      .then((existente) => setP(existente ?? personagemVazio(sessao.id)))
-      .catch((e: Error) => {
-        setErro(e.message);
-        setP(personagemVazio(sessao.id));
+    garantirSessao()
+      .then(async (sessao) => {
+        if (!sessao) {
+          router.replace("/");
+          return;
+        }
+        setJogador(sessao);
+        try {
+          const existente = await carregarPersonagem(sessao.id);
+          setP(existente ?? personagemVazio(sessao.id));
+        } catch (e) {
+          setErro((e as Error).message);
+          setP(personagemVazio(sessao.id));
+        }
       })
       .finally(() => setCarregando(false));
   }, [router]);

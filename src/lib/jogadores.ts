@@ -119,3 +119,29 @@ export function encerrarSessao() {
     /* ignora */
   }
 }
+
+/**
+ * Sessão criada enquanto o banco estava desconectado guarda um id que só
+ * existe naquele navegador. Quando o banco volta, salvar a ficha quebra na
+ * chave estrangeira. Aqui a gente confere e reconstrói pelo nome, sem o
+ * jogador perceber.
+ */
+export async function garantirSessao(): Promise<Jogador | null> {
+  const sessao = lerSessao();
+  if (!sessao) return null;
+  if (!supabaseConfigurado || !supabase) return sessao;
+
+  const { data, error } = await supabase
+    .from("jogadores")
+    .select("id, nome")
+    .eq("id", sessao.id)
+    .maybeSingle();
+
+  if (error) return sessao; // banco fora do ar: segue com o que tem
+  if (data) return data;
+
+  // o id não existe mais (ou nunca existiu): recria pelo nome
+  const recriado = await entrarComoJogador(sessao.nome);
+  salvarSessao(recriado);
+  return recriado;
+}

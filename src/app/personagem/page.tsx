@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { encerrarSessao, lerSessao, type Jogador } from "@/lib/jogadores";
+import {
+  encerrarSessao,
+  garantirSessao,
+  type Jogador,
+} from "@/lib/jogadores";
 import {
   carregarPersonagem,
   salvarPersonagem,
@@ -36,14 +40,14 @@ export default function PaginaPersonagem() {
   const [erroSalvar, setErroSalvar] = useState<string | null>(null);
 
   useEffect(() => {
-    const sessao = lerSessao();
-    if (!sessao) {
-      router.replace("/");
-      return;
-    }
-    setJogador(sessao);
-    carregarPersonagem(sessao.id)
-      .then((f) => {
+    garantirSessao()
+      .then(async (sessao) => {
+        if (!sessao) {
+          router.replace("/");
+          return;
+        }
+        setJogador(sessao);
+        const f = await carregarPersonagem(sessao.id).catch(() => null);
         if (!f) router.replace("/ficha");
         else setP(f);
       })
