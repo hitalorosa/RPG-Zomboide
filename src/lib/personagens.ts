@@ -90,6 +90,15 @@ export function personagemVazio(jogadorId: string): Personagem {
 
 const chaveLocal = (jogadorId: string) => `zomboide:personagem:${jogadorId}`;
 
+function lerLocalPersonagem(jogadorId: string): Personagem | null {
+  try {
+    const bruto = window.localStorage.getItem(chaveLocal(jogadorId));
+    return bruto ? (JSON.parse(bruto) as Personagem) : null;
+  } catch {
+    return null;
+  }
+}
+
 /* ------------------------------ leitura ------------------------------ */
 
 export async function carregarPersonagem(
@@ -121,9 +130,15 @@ export async function carregarPersonagem(
 export async function salvarPersonagem(p: Personagem): Promise<Personagem> {
   if (supabaseConfigurado && supabase) {
     if (p.id) {
+      // O retrato fica de fora do update. A ficha e a página do personagem
+      // seguram uma cópia que envelhece, e salvar qualquer campo devolvia o
+      // retrato_url antigo por cima do atual, apagando a imagem. Quem grava
+      // essa coluna é salvarRetrato, e só ela.
+      const { retrato_url: _retrato, ...campos } = p;
+      void _retrato;
       const { data, error } = await supabase
         .from("personagens")
-        .update(p)
+        .update(campos)
         .eq("id", p.id)
         .select("*")
         .single();
@@ -142,7 +157,13 @@ export async function salvarPersonagem(p: Personagem): Promise<Personagem> {
     return data as Personagem;
   }
 
-  const comId: Personagem = { ...p, id: p.id ?? crypto.randomUUID() };
+  // mesma proteção do caminho do banco: o retrato guardado vence o da cópia
+  const guardado = lerLocalPersonagem(p.jogador_id);
+  const comId: Personagem = {
+    ...p,
+    retrato_url: guardado?.retrato_url ?? p.retrato_url,
+    id: p.id ?? crypto.randomUUID(),
+  };
   try {
     window.localStorage.setItem(
       chaveLocal(p.jogador_id),
@@ -199,5 +220,36 @@ export async function listarMesa(): Promise<LinhaMesa[]> {
     });
   } catch {
     return [];
+  }
+}
+
+/**
+ * Único caminho que escreve no retrato. Fica separado de propósito: assim
+ * salvar a ficha ou mexer nas barras de estado nunca encosta na imagem.
+ */
+export async function salvarRetrato(
+  p: Personagem,
+  url: string
+): Promise<void> {
+  const retrato_url = url.trim();
+
+  if (supabaseConfigurado && supabase && p.id) {
+    const { error } = await supabase
+      .from("personagens")
+      .update({ retrato_url })
+      .eq("id", p.id);
+    if (error) throw new Error(error.message);
+    return;
+  }
+
+  const atual = lerLocalPersonagem(p.jogador_id);
+  if (!atual) return;
+  try {
+    window.localStorage.setItem(
+      chaveLocal(p.jogador_id),
+      JSON.stringify({ ...atual, retrato_url })
+    );
+  } catch {
+    /* navegador sem storage disponível */
   }
 }

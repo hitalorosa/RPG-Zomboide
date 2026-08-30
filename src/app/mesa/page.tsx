@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   listarMesa,
   salvarPersonagem,
+  salvarRetrato,
   type LinhaMesa,
   type Personagem,
 } from "@/lib/personagens";
@@ -433,7 +434,7 @@ function PainelRetrato({
     setErro(null);
     setSalvando(true);
     try {
-      await salvarPersonagem({ ...p, retrato_url: url.trim() } as Personagem);
+      await salvarRetrato(p, url);
       aoSalvar();
     } catch (e) {
       setErro((e as Error).message);
