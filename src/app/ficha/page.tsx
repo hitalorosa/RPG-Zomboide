@@ -382,6 +382,27 @@ export default function PaginaFicha() {
               placeholder="Um item por linha"
               linhas={5}
             />
+
+            {(() => {
+              const n = p.itens.split("\n").filter((i) => i.trim()).length;
+              return (
+                <p className="mt-2 text-xs text-bone-dim">
+                  <span
+                    className={
+                      n > 5 ? "text-ochre" : n > 0 ? "text-sage" : undefined
+                    }
+                  >
+                    {n} {n === 1 ? "item" : "itens"}
+                  </span>
+                  {n > 5 && (
+                    <span>
+                      . Você não carrega tudo isso numa fuga: na hora de correr,
+                      a rolagem de carga decide o que vai junto.
+                    </span>
+                  )}
+                </p>
+              );
+            })()}
           </div>
         </Secao>
 

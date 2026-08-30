@@ -121,3 +121,45 @@ Não é regra escrita, é postura de narrador. Toda vez que a mesa fizer barulho
 - **6:** ouviu, e é pior do que eles esperavam.
 
 Nunca anuncie a rolagem. Só descreva o silêncio ficando diferente.
+
+---
+
+## 6. Carga
+
+**Ninguém carrega a ficha inteira.** Toda vez que o grupo sair correndo de um
+lugar, cada um escolhe um jeito de empacotar e rola.
+
+| Jeito | Atributo |
+|---|---|
+| Pego tudo que der | Força |
+| Escolho rápido e saio | Agilidade |
+| Eu já tinha separado | Intelecto |
+| Sei onde está cada coisa | Percepção |
+
+**1d20 + o atributo escolhido:**
+
+| Resultado | Leva |
+|---|---|
+| **1 natural** | 1 item, e deixa cair algo que fazia falta |
+| até 8 | 2 itens |
+| 9 a 12 | 3 itens |
+| 13 a 16 | 4 itens |
+| 17 a 20 | 5 itens |
+| 21 ou mais | tudo que está na ficha |
+| **20 natural** | tudo, mais uma coisa que ele não lembrava que tinha |
+
+**A arma nunca conta.** Está no corpo, não na mochila.
+
+### O peso do grupo
+Some o que todos estão levando. É isso que decide como a fuga sai:
+
+| Total | Como saem |
+|---|---|
+| até 11 | limpos, ninguém ouve |
+| 12 a 18 | são ouvidos no portão |
+| 19 ou mais | alguma coisa já está esperando lá fora |
+
+> **Não mostre essa última tabela antes de rolarem.** Deixe a conta aparecer,
+> e o grupo vai começar a negociar sozinho o que abandonar.
+
+Saída com calma e planejamento não rola: levam tudo.

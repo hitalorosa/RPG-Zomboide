@@ -25,6 +25,9 @@ nada, a coisa simplesmente acontece.
 **5. Você arranja encrenca. Eles resolvem.** Nunca planeje a solução. Planeje o
 problema e o que acontece se der certo ou errado.
 
+**E uma sexta, que não é regra e sim vício de mesa:** ninguém carrega a ficha
+inteira. Toda fuga tem rolagem de carga. Ver Cena 5 em [`sessao-1.md`](sessao-1.md).
+
 ---
 
 # 2. Os dez minutos antes de começar
@@ -67,7 +70,7 @@ Depois vá direto para a enfermaria, com o NPC no estágio 2.
 
 ---
 
-# 4. Os quatro pontos de decisão da sessão
+# 4. Os cinco pontos de decisão da sessão
 
 A sessão inteira gira em torno destes. **Não decida por eles, e não sugira a
 resposta.** Só deixe claro o custo de cada lado.
@@ -77,7 +80,8 @@ resposta.** Só deixe claro o custo de cada lado.
 | **1** | Aceitar o corte da lista ou brigar | Descobrem que não existe ninguém pra matar |
 | **2** | Entregar o NPC, esconder, ou enfrentar | O gatilho da campanha. As três funcionam |
 | **3** | Levar coisa do Depósito, ou sair limpo | Sair equipado custa virar Procurado nível 3 |
-| **4** | Contornar a Usina, ou arriscar | Fecha a sessão. Não resolva hoje |
+| **4** | O que cada um abandona na fuga | Primeira vez que o grupo negocia entre si |
+| **5** | Contornar a Usina, ou arriscar | Fecha a sessão. Não resolva hoje |
 
 **Se travarem numa decisão por mais de cinco minutos:** faça o mundo escolher.
 Bandeira chega mais cedo. Alguém grita lá fora. Pressão resolve paralisia.

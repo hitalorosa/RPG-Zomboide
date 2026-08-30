@@ -1,6 +1,6 @@
 # Sessão 1: A Fuga
 
-Roteiro para hoje. Cinco cenas, todas dentro da Base e do canavial.
+Roteiro para hoje. Seis cenas, todas dentro da Base e do canavial.
 Regras em [`regras-minimas.md`](regras-minimas.md).
 
 ---
@@ -135,7 +135,67 @@ azol restantes**, a lista de racionamento.
 
 ---
 
-## Cena 5: O canavial, à noite
+---
+
+## Cena 5: O que dá pra levar
+
+**Rode isto sempre, antes de qualquer fuga.** É o que impede a mochila de virar
+depósito, e vale para o resto da campanha.
+
+Eles estão saindo às pressas, no escuro. O que está escrito na ficha é o que
+existe no alojamento deles. **Não é o que cabe nos braços.**
+
+### Como cada um empacota
+
+Cada jogador escolhe **um jeito** de fazer as malas, e cada jeito usa um
+atributo diferente. Isso é escolha, não sorteio: quem investiu em coisas
+diferentes tem caminhos diferentes.
+
+| Jeito | Atributo | A ideia |
+|---|---|---|
+| **Pego tudo que der** | Força | Carrega no braço e aguenta o peso |
+| **Escolho rápido e saio** | Agilidade | Menos tempo parado, menos risco |
+| **Eu já tinha separado** | Intelecto | Estava pronto para esse dia |
+| **Sei onde está cada coisa** | Percepção | Não perde um segundo procurando |
+
+Depois, **1d20 + o atributo escolhido**:
+
+| Resultado | Leva |
+|---|---|
+| **1 natural** | **1 item.** E deixa cair alguma coisa que fazia falta |
+| **até 8** | 2 itens |
+| **9 a 12** | 3 itens |
+| **13 a 16** | 4 itens |
+| **17 a 20** | 5 itens |
+| **21 ou mais** | **Tudo que escreveu na ficha** |
+| **20 natural** | Tudo, **mais uma coisa** que ele não lembrava que tinha. Deixe o jogador inventar |
+
+> **A arma nunca conta.** Ela está no corpo, não na mochila.
+
+### E aí vem a parte que faz a mesa conversar
+
+Some tudo que o grupo está levando. **O peso do grupo decide como a fuga sai:**
+
+| Total do grupo | Como saem |
+|---|---|
+| **até 11 itens** | Saem limpos. Ninguém ouve nada |
+| **12 a 18** | São ouvidos no portão. Bandeira sabe que horas foi |
+| **19 ou mais** | Alguma coisa **já está esperando** no canavial |
+
+**Não avise a tabela antes de rolarem.** Diga só que o que eles carregam faz
+barulho, e deixe a conta aparecer.
+
+> **O que essa cena produz:** quem rolou bem começa a oferecer espaço, e quem
+> rolou mal começa a escolher o que abandonar. **É a primeira vez que o grupo
+> negocia entre si**, e é de graça.
+
+### Nas próximas sessões
+Rode a mesma coisa toda vez que saírem correndo de algum lugar. Quando saírem
+com calma e planejamento, não role: eles levam tudo.
+
+---
+
+## Cena 6: O canavial, à noite
 
 **Onde:** o portãozinho de serviço nos fundos, meio bloqueado com entulho. Foi
 desenhado no mapa da Base de propósito. Se não acharem, o Rô conta onde é.
